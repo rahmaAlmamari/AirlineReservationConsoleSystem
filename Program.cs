@@ -24,10 +24,9 @@
                 switch (ShowMainMenu())
                 {
                     case 0:
-                        Console.WriteLine("Have a nice day ...");
+                        ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
                         return;
-
 
                     default:
                         Console.WriteLine("\n You enter unaccepted option! ... to try again click enter key");
@@ -65,6 +64,11 @@
             menuChoice = int.Parse(Console.ReadLine());
 
             return menuChoice;
+        }
+        //3. ExitApplication() ...
+        public static void ExitApplication()
+        {
+            Console.WriteLine("Have a nice day ..."); 
         }
     }
 }
