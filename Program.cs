@@ -14,6 +14,8 @@ namespace AirlineReservationConsoleSystem
         static DateTime[] departureTime_array = new DateTime[MAX_FLIGHT];
         static int[] seatsNumber_array = new int[MAX_FLIGHT];
         static int[] duration_array = new int[MAX_FLIGHT];
+        static bool duration_isEmpty;
+        static bool seats_isEmpty;
 
         //Main method ...
         static void Main(string[] args)
@@ -49,7 +51,7 @@ namespace AirlineReservationConsoleSystem
                             {
                                 Console.WriteLine("Please enter the following info:");
                                 //declare variables to holde flight info ...
-                                string f_Code = "Null";
+                                string f_Code;
                                 string f_fromCity = "Null";
                                 string f_toCity = "Null";
                                 DateTime f_departureTime = DateTime.Now;
@@ -61,10 +63,25 @@ namespace AirlineReservationConsoleSystem
                                 f_fromCity = Console.ReadLine();
                                 Console.WriteLine("Flight to city:");
                                 f_toCity = Console.ReadLine();
-                                Console.WriteLine("Flight duration:");
-                                f_duration = int.Parse(Console.ReadLine());
-                                Console.WriteLine("Flight seats number:");
-                                f_seatsNumber = int.Parse(Console.ReadLine());
+                                try
+                                {
+                                    Console.WriteLine("Flight duration:");
+                                    f_duration = int.Parse(Console.ReadLine());
+                                }
+                                catch (Exception e)
+                                {
+                                    duration_isEmpty = true;
+                                }
+                                try
+                                {
+                                    Console.WriteLine("Flight seats number:");
+                                    f_seatsNumber = int.Parse(Console.ReadLine());
+                                }
+                                catch(Exception e)
+                                {
+                                    seats_isEmpty = true;
+                                }
+                                
                                 //calling the AddFlight method ...
                                 AddFlight(flightCode: f_Code, fromCity: f_fromCity, 
                                           toCity: f_toCity, departureTime: f_departureTime, 
@@ -136,31 +153,39 @@ namespace AirlineReservationConsoleSystem
                                      string toCity, DateTime departureTime, 
                                      int duration, int seats)
         {
-     
-                    //flightCode input process code ... 
-                    bool flag_flightCode;
-                    do
+
+            //flightCode input process code ... 
+            bool flag_flightCode;
+            do
+            {
+                flag_flightCode = false;
+
+                // Check for null or empty
+                if (string.IsNullOrWhiteSpace(flightCode))
+                {
+                    Console.WriteLine("Flight code cannot be empty. Please enter a valid flight code:");
+                    flightCode = Console.ReadLine();
+                    flag_flightCode = true;
+                    continue;
+                }
+
+                // Check if already exists
+                for (int i = 0; i < FlightCount; i++)
+                {
+                    if (flightCode == flightCode_array[i])
                     {
-                        flag_flightCode = false;
+                        Console.WriteLine("Flight code already exists. Please enter a unique flight code:");
+                        flightCode = Console.ReadLine();
+                        flag_flightCode = true;
+                        break;
+                    }
+                }
 
-                        for (int i = 0; i < FlightCount; i++)
-                        {
-                            //to check if fligh code unique or not ...
-                            if (flightCode == flightCode_array[i])
-                            {
-                                Console.WriteLine("Flight Code not valid, it must be unique.");
-                                Console.Write("Please enter a new flight code: ");
-                                flightCode = Console.ReadLine();
-                                flag_flightCode = true;
-                                // exit the for loop early if duplicate found
-                                break; 
-                            }
-                        }
+            } while (flag_flightCode);
 
-                    } while (flag_flightCode);
 
-                    //fromCity input process code ... 
-                    bool flag_fromCity;//to know if the fromCity add or not ...
+            //fromCity input process code ... 
+            bool flag_fromCity;//to know if the fromCity add or not ...
                     do
                     {
                         flag_fromCity = false;
@@ -180,9 +205,9 @@ namespace AirlineReservationConsoleSystem
 
                     } while (flag_fromCity);
 
-                    //toCity input process code ... 
-                    bool flag_toCity;//to know if the toCity add or not ...
-                    do
+            //toCity input process code ... 
+            bool flag_toCity;//to know if the toCity add or not ...
+            do
                     {
                         flag_toCity = false;
                         //to check if fromCity has number or not ...
@@ -201,32 +226,73 @@ namespace AirlineReservationConsoleSystem
 
                     } while (flag_toCity);
 
-                    //duration input process code ... 
-                    bool flag_duration;//to know if the duration add or not ...
-                    do
+            //duration input process code ... 
+            bool flag_duration;//to know if the duration add or not ...
+            do
+            {
+            
+                flag_duration = false;
+                //it must not be empty ...
+                if (duration_isEmpty)
+                {
+                    Console.WriteLine("Flight duration not vaild it can not be empty");
+                    flag_duration = true;
+                    if (flag_duration)
                     {
-                        flag_duration = false;
-                        //it must be < 0 or not ...
-                        if(duration < 0)
+                        try
                         {
-                            Console.WriteLine("Flight duration not vaild it must be > zero ");
-                            flag_duration = true;
-                            if (flag_duration)
-                            {
-                                Console.WriteLine("Flight duration:");
-                                duration = int.Parse(Console.ReadLine());
-                            }
+                            Console.WriteLine("Flight duration:");
+                            duration = int.Parse(Console.ReadLine());
+                            duration_isEmpty = false;
+                        }
+                        catch(Exception e)
+                        {
+                            duration_isEmpty = true;
+                        }
+                       
+                    }
+                }
+                //it must be < 0 or not ...
+                if(duration < 0)
+                {
+                    Console.WriteLine("Flight duration not vaild it must be > zero ");
+                    flag_duration = true;
+                    if (flag_duration)
+                    {
+                       Console.WriteLine("Flight duration:");
+                       duration = int.Parse(Console.ReadLine());
+                    }
+                }
+
+            } while (flag_duration);
+
+            //seats input process code ... 
+            bool flag_seats;//to know if the seats add or not ...
+            do
+              {
+                flag_seats = false;
+                //it must not be empty ...
+                if (seats_isEmpty)
+                {
+                    Console.WriteLine("Flight seats not vaild it can not be empty");
+                    flag_seats = true;
+                    if (flag_seats)
+                    {
+                        try
+                        {
+                            Console.WriteLine("Flight seats:");
+                            seats = int.Parse(Console.ReadLine());
+                            seats_isEmpty = false;
+                        }
+                        catch (Exception e)
+                        {
+                            seats_isEmpty = true;
                         }
 
-                    } while (flag_duration);
-
-                    //seats input process code ... 
-                    bool flag_seats;//to know if the seats add or not ...
-                    do
-                    {
-                        flag_seats = false;
-                        //it must be > 0 or < 100 ...
-                        if (seats < 0 || seats > 100)
+                    }
+                }
+                //it must be > 0 or < 100 ...
+                if (seats < 0 || seats > 100)
                         {
                             Console.WriteLine("Flight seats not vaild it must be > 0 and < 100 ");
                             flag_seats = true;
@@ -239,21 +305,21 @@ namespace AirlineReservationConsoleSystem
 
                     } while (flag_seats);
 
-                    //to store the data in the arraies ...
-                    flightCode_array[FlightCount] = flightCode;
-                    fromCity_array[FlightCount] = fromCity;
-                    toCity_array[FlightCount] = toCity;
-                    departureTime_array[FlightCount] = departureTime;
-                    duration_array[FlightCount] = duration;
-                    seatsNumber_array[FlightCount] = seats;
+            //to store the data in the arraies ...
+            flightCode_array[FlightCount] = flightCode;
+            fromCity_array[FlightCount] = fromCity;
+            toCity_array[FlightCount] = toCity;
+            departureTime_array[FlightCount] = departureTime;
+            duration_array[FlightCount] = duration;
+            seatsNumber_array[FlightCount] = seats;
 
-                    // so the system know that there are one more flight added ......
-                    FlightCount++;
-                    Console.WriteLine("Flight add successfully ...");
+            // so the system know that there are one more flight added ......
+            FlightCount++;
+            Console.WriteLine("Flight add successfully ...");
         }
 
         //ADDITIONAL METHODS ...
-        //1. To check of the string contains something other than letters (this methos return true or false)....
+        //1. To check of the string contains something other than letters like number and empty space(this methos return true or false)....
         static bool IsAlpha(string input)
         {
             return Regex.IsMatch(input, "^[a-zA-Z]+$");
