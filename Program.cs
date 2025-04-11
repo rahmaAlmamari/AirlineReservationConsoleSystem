@@ -12,8 +12,8 @@ namespace AirlineReservationConsoleSystem
         static string[] fromCity_array = new string[MAX_FLIGHT];
         static string[] toCity_array = new string[MAX_FLIGHT];
         static DateTime[] departureTime_array = new DateTime[MAX_FLIGHT];
-        static int[] seatsNumber_array = new int[MAX_FLIGHT];
         static int[] duration_array = new int[MAX_FLIGHT];
+        static int[] seatsNumber_array = new int[MAX_FLIGHT];
         static bool duration_isEmpty;
         static bool seats_isEmpty;
 
@@ -38,7 +38,7 @@ namespace AirlineReservationConsoleSystem
                 //run switch to access the services user want based on user choice ...
                 switch (ShowMainMenu())
                 {
-                    case 1:
+                    case 1://to add new flight ...
                         char choice;
                         // do loop to repeat the process of adding new Flight 
                         //based on the user choice y/n ...
@@ -100,6 +100,10 @@ namespace AirlineReservationConsoleSystem
                         } while (choice == 'y' || choice == 'Y') ;
                         break;
 
+                    case 2://to display all flight ...
+                        DisplayAllFlights();
+                        break;
+
                     case 0:
                         ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
@@ -132,9 +136,10 @@ namespace AirlineReservationConsoleSystem
             Console.Clear();
             Console.WriteLine("System Menu please select option:\n");
             Console.WriteLine("1. Add Flight");
-            Console.WriteLine("2. Book Flight");
-            Console.WriteLine("3. Cancel");
-            Console.WriteLine("4. View Flights");
+            Console.WriteLine("2. Display All Flights");
+            Console.WriteLine("3. Book Flight");
+            Console.WriteLine("4. Cancel");
+            Console.WriteLine("5. View Flights");
 
             Console.WriteLine("0. Exit the system");
 
@@ -316,6 +321,21 @@ namespace AirlineReservationConsoleSystem
             // so the system know that there are one more flight added ......
             FlightCount++;
             Console.WriteLine("Flight add successfully ...");
+        }
+
+        //Flight and Passenger Management (4) ...
+        //1. DisplayAllFlights() ...
+        public static void DisplayAllFlights()
+        {
+            Console.WriteLine("Flight information:");
+            Console.WriteLine("Flight Code | From City | To City | Departure Time | Duration | Seats");
+            //loop to show all flight info for all records ...
+            for(int i = 0; i<FlightCount; i++)
+            {
+                Console.WriteLine($"{flightCode_array[i]} | {fromCity_array[i]} " +
+                                  $"| {toCity_array[i]} | {departureTime_array[i]} " +
+                                  $"| {duration_array[i]} | {seatsNumber_array[i]}");
+            }
         }
 
         //ADDITIONAL METHODS ...
