@@ -104,6 +104,21 @@ namespace AirlineReservationConsoleSystem
                         DisplayAllFlights();
                         break;
 
+                    case 3://to find flight by code ...
+                        string f_code;
+                        Console.WriteLine("Enter flight code you want to search for:");
+                        f_code = Console.ReadLine();
+                        bool result = FindFlightByCode(f_code);
+                        if (result)
+                        {
+                            Console.WriteLine("Flight code is found");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Flight code not found");
+                        }
+                        break;
+
                     case 0:
                         ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
@@ -137,9 +152,10 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("System Menu please select option:\n");
             Console.WriteLine("1. Add Flight");
             Console.WriteLine("2. Display All Flights");
-            Console.WriteLine("3. Book Flight");
-            Console.WriteLine("4. Cancel");
-            Console.WriteLine("5. View Flights");
+            Console.WriteLine("3. Find Flight By Code");
+            Console.WriteLine("4. Book Flight");
+            Console.WriteLine("5. Cancel");
+            Console.WriteLine("6. View Flights");
 
             Console.WriteLine("0. Exit the system");
 
@@ -336,6 +352,43 @@ namespace AirlineReservationConsoleSystem
                                   $"| {toCity_array[i]} | {departureTime_array[i]} " +
                                   $"| {duration_array[i]} | {seatsNumber_array[i]}");
             }
+        }
+        //2. FindFlightByCode(string code) ...
+        public static bool FindFlightByCode(string code)
+        {
+            bool found = false;
+            //flightCode search process code ... 
+            bool flag_flightCode;
+            do
+            {
+                flag_flightCode = false;
+
+                //to check for null or empty
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    Console.WriteLine("Flight code cannot be empty. Please enter a valid flight code:");
+                    code = Console.ReadLine();
+                    flag_flightCode = true;
+                    continue;
+                }
+
+                //to search for flight code ...
+                for (int i = 0; i < FlightCount; i++)
+                {
+                    if (code == flightCode_array[i])
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        found = false;
+                    }
+                }
+
+            } while (flag_flightCode);
+
+            return found;
+            
         }
 
         //ADDITIONAL METHODS ...
