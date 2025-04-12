@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using System.Globalization;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 namespace AirlineReservationConsoleSystem
@@ -14,6 +15,8 @@ namespace AirlineReservationConsoleSystem
         static DateTime[] departureTime_array = new DateTime[MAX_FLIGHT];
         static int[] duration_array = new int[MAX_FLIGHT];
         static int[] seatsNumber_array = new int[MAX_FLIGHT];
+        static bool departureTime_isEmpty;
+        static int departureTime_index;
         static bool duration_isEmpty;
         static bool seats_isEmpty;
 
@@ -39,7 +42,7 @@ namespace AirlineReservationConsoleSystem
                 switch (ShowMainMenu())
                 {
                     case 1://to add new flight ...
-                        char choice;
+                        char choice1;
                         // do loop to repeat the process of adding new Flight 
                         //based on the user choice y/n ...
                         do
@@ -87,17 +90,17 @@ namespace AirlineReservationConsoleSystem
                                           toCity: f_toCity, departureTime: f_departureTime, 
                                           duration: f_duration, seats: f_seatsNumber);
                                 Console.WriteLine("Do you want to add anther Flight? y / n");
-                                choice = Console.ReadKey().KeyChar;
+                                choice1 = Console.ReadKey().KeyChar;
                                 Console.ReadLine();//just to hold second ...
                             }
                             else
                             {
                                 Console.WriteLine("Sory you can not add more Flight there are no space remain!");
                                 Console.WriteLine();
-                                choice = 'n';
+                                choice1 = 'n';
                             }
   
-                        } while (choice == 'y' || choice == 'Y') ;
+                        } while (choice1 == 'y' || choice1 == 'Y') ;
                         break;
 
                     case 2://to display all flight ...
@@ -117,6 +120,49 @@ namespace AirlineReservationConsoleSystem
                         {
                             Console.WriteLine("Flight code not found");
                         }
+                        break;
+
+                    case 4://to update flight departure ...
+                        char choice4;
+                        // do loop to repeat the process of update flight departure 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                        //to display all flights wtih details ...
+                        DisplayAllFlights();
+                        //update process start here ...
+                        string updateFcode;
+                        //DateTime updateDeparture;
+                        Console.WriteLine("Enter flight code to update departure:");
+                        updateFcode = Console.ReadLine();
+                        //to check if flight code exis or not ...
+                        bool flag_fCode = false;
+                        for(int i = 0; i < FlightCount; i++)
+                        {
+                            if(updateFcode == flightCode_array[i])
+                            {
+                                flag_fCode = false;
+                                Console.WriteLine("This flight code has departure time as: " 
+                                                  + departureTime_array[i]);
+                                departureTime_index = i;
+                                    ValidateFlightDepartureTime_Update(i);
+                               
+                                break;
+                            }
+                            else
+                            {
+                                flag_fCode = true;
+                            }
+                        }
+                        if (flag_fCode)
+                        {
+                            Console.WriteLine("Sorry flight code you enter dose not exit!");
+                        }
+                            Console.WriteLine("Do you want to update anther" +
+                                              " flight departure time? y / n");
+                            choice4 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice4 == 'y' || choice4 == 'Y');
                         break;
 
                     case 0:
@@ -153,9 +199,10 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("1. Add Flight");
             Console.WriteLine("2. Display All Flights");
             Console.WriteLine("3. Find Flight By Code");
-            Console.WriteLine("4. Book Flight");
-            Console.WriteLine("5. Cancel");
-            Console.WriteLine("6. View Flights");
+            Console.WriteLine("4. Update Flight Departure");
+            Console.WriteLine("5. Book Flight");
+            Console.WriteLine("6. Cancel");
+            Console.WriteLine("7. View Flights");
 
             Console.WriteLine("0. Exit the system");
 
@@ -324,7 +371,7 @@ namespace AirlineReservationConsoleSystem
                             }
                         }
 
-                    } while (flag_seats);
+            } while (flag_seats);
 
             //to store the data in the arraies ...
             flightCode_array[FlightCount] = flightCode;
@@ -390,12 +437,106 @@ namespace AirlineReservationConsoleSystem
             return found;
             
         }
+        //3. UpdateFlightDeparture(ref DateTime departure) ...
+        public static void UpdateFlightDeparture(ref DateTime OriginalDeparture, 
+                                                     DateTime FinalDeparture)
+        {
+            //to update departure ...
+            OriginalDeparture = FinalDeparture;
+            Console.WriteLine("Flight departure update successfully");
+        }
 
         //ADDITIONAL METHODS ...
         //1. To check of the string contains something other than letters like number and empty space(this methos return true or false)....
         static bool IsAlpha(string input)
         {
             return Regex.IsMatch(input, "^[a-zA-Z]+$");
+        }
+        //2. Input flight departure time ...
+        public static DateTime InputFlightDepartureTimeValide()
+        {
+            DateTime Departure = DateTime.MinValue;
+            DateTime final_departure;
+            bool ValideDateTime;
+            bool flag_departure;
+            string string_time;
+            do
+            {
+                flag_departure = false;
+                try
+                {
+                    Console.WriteLine("Please enter the departure time " +
+                                      "in the format (MM/dd/yy HH:mm:ss):");
+                    Departure = DateTime.Parse(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    departureTime_isEmpty = true;
+                }
+                //to convert flight departure time from DateTime to string ...
+                string_time = Departure.ToString("MM/dd/yy HH:mm:ss");
+                //to check if string_time is empty or not ...
+                if (departureTime_isEmpty)
+                {
+                    Console.WriteLine("Flight departure time not vaild it can not be empty");
+                    flag_departure = true;
+                    if (flag_departure)
+                    {
+                        try
+                        {
+                            Console.WriteLine("Please enter flight departure time again" +
+                                              "in the format (MM/dd/yy HH:mm:ss):");
+                            string_time = Console.ReadLine();
+                            departureTime_isEmpty = false;
+                        }
+                        catch (Exception e)
+                        {
+                            departureTime_isEmpty = true;
+                        }
+
+                    }
+                }
+                //to check if string_time is in the right formate or not ...
+                string format = "MM/dd/yy HH:mm:ss";
+                CultureInfo provider = CultureInfo.InvariantCulture;
+                ValideDateTime = DateTime.TryParseExact(
+
+                                 string_time,
+                                 format,
+                                 provider,
+                                 DateTimeStyles.None,
+                                 out final_departure
+                                 );
+                // Check if the parsed time is valid and in the future
+                if (ValideDateTime)
+                {
+                    if (final_departure >= DateTime.Now)  // Ensure departure time is >= current time
+                    {
+                        flag_departure = false;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The departure time must be greater than or equal to the current date and time.");
+                        flag_departure = true;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date/time format. Please try again.");
+                    flag_departure = true;
+                }
+
+            } while (flag_departure);
+
+            return final_departure;
+        }
+        //3. Validate flight departure time ...
+        public static void ValidateFlightDepartureTime_Update(int index)
+        {
+            DateTime final_departure = InputFlightDepartureTimeValide();
+
+            //call UpdateFlightDeparture() method to update the valide DateTime ...
+            UpdateFlightDeparture(ref departureTime_array[index], final_departure);
         }
 
 
