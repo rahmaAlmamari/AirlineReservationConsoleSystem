@@ -19,6 +19,11 @@ namespace AirlineReservationConsoleSystem
         static int departureTime_index;
         static bool duration_isEmpty;
         static bool seats_isEmpty;
+        //globle variables and arraies for passenger ...
+        static int MAX_PASSENGER = 100;
+        static int PassengerCount = 0;
+        static string[] passengerNames_array = new string[MAX_PASSENGER];
+        static int[] passenger_BookingFlightIndex = new int[MAX_PASSENGER];
 
         //Main method ...
         static void Main(string[] args)
@@ -166,6 +171,33 @@ namespace AirlineReservationConsoleSystem
                         } while (choice4 == 'y' || choice4 == 'Y');
                         break;
 
+                    case 5://to Book Flight ...
+                        char choice5;
+                        // do loop to repeat the process of book flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all flights wtih details ...
+                            DisplayAllFlights();
+
+                            //booking process ...
+                            string passengerName_Book;
+                            string f_code_book;
+                            Console.WriteLine("Please enter booking details:");
+                            Console.WriteLine("Flight code:");
+                            f_code_book = Console.ReadLine();
+                            Console.WriteLine("Passenger Name:");
+                            passengerName_Book = Console.ReadLine();
+                            //calling BookFlight() method ...
+                            BookFlight(passengerName_Book, f_code_book);
+
+                            Console.WriteLine("Do you want to book anther" +
+                                              " flight? y / n");
+                            choice5 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice5 == 'y' || choice5 == 'Y');
+                        break;
+
                     case 0:
                         ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
@@ -278,16 +310,7 @@ namespace AirlineReservationConsoleSystem
                     flightCode = Console.ReadLine();
                     flag_flightCode = true;
                 }
-                //for (int i = 0; i < FlightCount; i++)
-                //{
-                //    if (flightCode == flightCode_array[i])
-                //    {
-                //        Console.WriteLine("Flight code already exists. Please enter a unique flight code:");
-                //        flightCode = Console.ReadLine();
-                //        flag_flightCode = true;
-                //        break;
-                //    }
-                //}
+          
 
             } while (flag_flightCode);
 
@@ -499,6 +522,73 @@ namespace AirlineReservationConsoleSystem
 
         //Passenger Booking Functions (5) ...
         //1. BookFlight(string passengerName, string flightCode = "Default001") ...
+        public static void BookFlight(string passengerName, string flightCode = "Default001")
+        {
+            //Book Flight process code ... 
+            bool flag_BookFlight;
+            int booking_index = 0;
+            int count_seat = 0;
+            do
+            {
+                flag_BookFlight = false;
+
+                //to check for null or empty
+                if (string.IsNullOrWhiteSpace(passengerName))
+                {
+                    Console.WriteLine("Passenger name cannot be empty. Please enter a valid passenger name:");
+                    passengerName = Console.ReadLine();
+                    flag_BookFlight = true;
+                    continue;
+                }
+
+                //to search for flight code ...
+                for (int i = 0; i < FlightCount; i++)
+                {
+                    if (flightCode == flightCode_array[i])
+                    {
+                        flag_BookFlight = false;
+                        booking_index = i;
+                        break;
+                    }
+                    else if (flightCode == "Default001")
+                    {
+                        flag_BookFlight = false;
+                        booking_index = MAX_FLIGHT - 1;
+                        break;
+                    }
+                    else
+                    {
+                        flag_BookFlight = true;
+                    }
+                }
+
+            } while (flag_BookFlight);
+            //to check if there is seat left to book in the flight ...
+            for(int i = 0; i < PassengerCount; i++)
+            {
+                if(booking_index == passenger_BookingFlightIndex[i])
+                {
+                    count_seat++;
+                }
+            }
+            //to store booking detalis ...
+            if (!flag_BookFlight)
+            {
+                if(count_seat >= seatsNumber_array[booking_index])
+                {
+                    Console.WriteLine("Sorry there is no more seats in this flight!");
+                    //return;
+                }
+                else
+                {
+                    passengerNames_array[PassengerCount] = passengerName;
+                    passenger_BookingFlightIndex[PassengerCount] = booking_index;
+                    //to let the system know that there is one more passenger added ...
+                    PassengerCount++;
+                    Console.WriteLine("Book flight process done successfully");
+                }
+            }
+        }
         //2. ValidateFlightCode(string flightCode)  ...
         public static bool ValidateFlightCode(string flightCode)
         {
