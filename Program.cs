@@ -24,6 +24,7 @@ namespace AirlineReservationConsoleSystem
         static int PassengerCount = 0;
         static string[] passengerNames_array = new string[MAX_PASSENGER];
         static int[] passenger_BookingFlightIndex = new int[MAX_PASSENGER];
+        static string[] passengerBookingID_array = new string[MAX_PASSENGER];
 
         //Main method ...
         static void Main(string[] args)
@@ -581,8 +582,10 @@ namespace AirlineReservationConsoleSystem
                 }
                 else
                 {
+                    string passengerBookingID = GenerateBookingID(passengerName);
                     passengerNames_array[PassengerCount] = passengerName;
                     passenger_BookingFlightIndex[PassengerCount] = booking_index;
+                    passengerBookingID_array[PassengerCount] = passengerBookingID;
                     //to let the system know that there is one more passenger added ...
                     PassengerCount++;
                     Console.WriteLine("Book flight process done successfully");
@@ -604,6 +607,15 @@ namespace AirlineReservationConsoleSystem
             return isExists;
         }
         //3. GenerateBookingID(string passengerName) ...
+        public static string GenerateBookingID(string passengerName)
+        {
+            string bookingID;
+            //to generate a random number ...
+            Random random = new Random();
+            string randomNumber = random.Next(1, 100).ToString();
+            bookingID = passengerName + randomNumber;
+            return bookingID;
+        }
         //4.DisplayFlightDetails(string code) ...
         //5. SearchBookingsByDestination(string toCity) ...
 
