@@ -181,6 +181,38 @@ namespace AirlineReservationConsoleSystem
             }
         }
         //2. ConfirmAction(string action) ...
+        public static bool ConfirmAction(string action)
+        {
+            //confirm process ...
+            bool flag_action;//to know if the user enter choice or not
+            char actionChoice = 'y';
+            bool actionStatus;//to set the confirm action status true/false ...
+            do
+            {
+                flag_action = false;
+                try
+                {
+                    Console.WriteLine($"“Are you sure to {action} ? Y/N");
+                    actionChoice = char.Parse(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Please confirm your action");
+                    flag_action = true;
+                }
+            } while (flag_action);
+       
+            if(actionChoice == 'Y' || actionChoice == 'y')
+            {
+                actionStatus = true;
+            }
+            else
+            {
+                actionStatus = false;
+            }
+
+            return actionStatus;
+        }
 
         //Startup & Navigation (4) ...
         //1. DisplayWelcomeMessage() ...
@@ -442,9 +474,19 @@ namespace AirlineReservationConsoleSystem
         public static void UpdateFlightDeparture(ref DateTime OriginalDeparture, 
                                                      DateTime FinalDeparture)
         {
-            //to update departure ...
-            OriginalDeparture = FinalDeparture;
-            Console.WriteLine("Flight departure update successfully");
+            //to confirm the update process ...
+            bool Confirm = ConfirmAction("Update Flight Departure");
+            if (Confirm)
+            {
+                //to update departure ...
+                OriginalDeparture = FinalDeparture;
+                Console.WriteLine("Flight departure update successfully");
+            }
+            else
+            {
+                Console.WriteLine("Flight departure update stoped");
+            }
+           
         }
 
         //ADDITIONAL METHODS ...
