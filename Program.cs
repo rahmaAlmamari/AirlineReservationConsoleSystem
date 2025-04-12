@@ -271,16 +271,23 @@ namespace AirlineReservationConsoleSystem
                 }
 
                 // Check if already exists
-                for (int i = 0; i < FlightCount; i++)
+                bool exists_result = ValidateFlightCode(flightCode);
+                if (exists_result)
                 {
-                    if (flightCode == flightCode_array[i])
-                    {
-                        Console.WriteLine("Flight code already exists. Please enter a unique flight code:");
-                        flightCode = Console.ReadLine();
-                        flag_flightCode = true;
-                        break;
-                    }
+                    Console.WriteLine("Flight code already exists. Please enter a unique flight code:");
+                    flightCode = Console.ReadLine();
+                    flag_flightCode = true;
                 }
+                //for (int i = 0; i < FlightCount; i++)
+                //{
+                //    if (flightCode == flightCode_array[i])
+                //    {
+                //        Console.WriteLine("Flight code already exists. Please enter a unique flight code:");
+                //        flightCode = Console.ReadLine();
+                //        flag_flightCode = true;
+                //        break;
+                //    }
+                //}
 
             } while (flag_flightCode);
 
@@ -488,6 +495,27 @@ namespace AirlineReservationConsoleSystem
             }
            
         }
+        //4. CancelFlightBooking(out string passengerName) ...
+
+        //Passenger Booking Functions (5) ...
+        //1. BookFlight(string passengerName, string flightCode = "Default001") ...
+        //2. ValidateFlightCode(string flightCode)  ...
+        public static bool ValidateFlightCode(string flightCode)
+        {
+            bool isExists = false;
+            for (int i = 0; i < FlightCount; i++)
+            {
+                if (flightCode == flightCode_array[i])
+                {
+                    isExists = true;
+                    break;
+                }
+            }
+            return isExists;
+        }
+        //3. GenerateBookingID(string passengerName) ...
+        //4.DisplayFlightDetails(string code) ...
+        //5. SearchBookingsByDestination(string toCity) ...
 
         //ADDITIONAL METHODS ...
         //1. To check of the string contains something other than letters like number and empty space(this methos return true or false)....
