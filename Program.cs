@@ -57,7 +57,7 @@ namespace AirlineReservationConsoleSystem
                                 string f_Code;
                                 string f_fromCity = "Null";
                                 string f_toCity = "Null";
-                                DateTime f_departureTime = DateTime.Now;
+                                DateTime f_departureTime;
                                 int f_seatsNumber = 0;
                                 int f_duration = 0;
                                 Console.WriteLine("Flight code:");
@@ -66,6 +66,7 @@ namespace AirlineReservationConsoleSystem
                                 f_fromCity = Console.ReadLine();
                                 Console.WriteLine("Flight to city:");
                                 f_toCity = Console.ReadLine();
+                                f_departureTime = InputFlightDepartureTimeValide();
                                 try
                                 {
                                     Console.WriteLine("Flight duration:");
@@ -465,7 +466,7 @@ namespace AirlineReservationConsoleSystem
                 flag_departure = false;
                 try
                 {
-                    Console.WriteLine("Please enter the departure time " +
+                    Console.WriteLine("Flight departure time " +
                                       "in the format (MM/dd/yy HH:mm:ss):");
                     Departure = DateTime.Parse(Console.ReadLine());
                 }
