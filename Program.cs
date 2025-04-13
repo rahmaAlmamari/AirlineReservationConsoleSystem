@@ -25,6 +25,7 @@ namespace AirlineReservationConsoleSystem
         static string[] passengerNames_array = new string[MAX_PASSENGER];
         static int[] passenger_BookingFlightIndex = new int[MAX_PASSENGER];
         static string[] passengerBookingID_array = new string[MAX_PASSENGER];
+        static bool Book_fCodeIsEmpty;
         //globle variable for calculate total fare ...
         static bool price_isEmpty;
         static bool TicketNumber_isEmpty;
@@ -186,14 +187,33 @@ namespace AirlineReservationConsoleSystem
 
                             //booking process ...
                             string passengerName_Book;
-                            string f_code_book;
+                            string f_code_book = "null";
                             Console.WriteLine("Please enter booking details:");
-                            Console.WriteLine("Flight code:");
-                            f_code_book = Console.ReadLine();
+                            try
+                            {
+                                Console.WriteLine("Flight code:");
+                                f_code_book = Console.ReadLine();
+                                Book_fCodeIsEmpty = false;
+                            }
+                            catch(Exception e)
+                            {
+                                Book_fCodeIsEmpty = true;
+                            }
                             Console.WriteLine("Passenger Name:");
                             passengerName_Book = Console.ReadLine();
-                            //calling BookFlight() method ...
-                            BookFlight(passengerName_Book, f_code_book);
+
+                            //calling BookFlight based on flight code input ...
+                            if (Book_fCodeIsEmpty)
+                            {
+                                //calling BookFlight() method ...
+                                BookFlight(passengerName_Book);
+                            }
+                            else
+                            {
+                                //calling BookFlight() method ...
+                                BookFlight(passengerName_Book, f_code_book);
+                            }
+                           
 
                             Console.WriteLine("Do you want to book anther" +
                                               " flight? y / n");
