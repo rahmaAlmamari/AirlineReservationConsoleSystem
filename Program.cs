@@ -25,6 +25,9 @@ namespace AirlineReservationConsoleSystem
         static string[] passengerNames_array = new string[MAX_PASSENGER];
         static int[] passenger_BookingFlightIndex = new int[MAX_PASSENGER];
         static string[] passengerBookingID_array = new string[MAX_PASSENGER];
+        //globle variable for calculate total fare ...
+        static bool price_isEmpty;
+        static bool TicketNumber_isEmpty;
 
         //Main method ...
         static void Main(string[] args)
@@ -201,7 +204,7 @@ namespace AirlineReservationConsoleSystem
 
                     case 6://to display flight details ...
                         char choice6;
-                        // do loop to repeat the process of book flight 
+                        // do loop to repeat the process of display flight details
                         //based on the user choice y/n ...
                         do
                         {
@@ -247,7 +250,7 @@ namespace AirlineReservationConsoleSystem
 
                     case 7://to search bookings by destination ...
                         char choice7;
-                        // do loop to repeat the process of book flight 
+                        // do loop to repeat the process of search bookings by destination 
                         //based on the user choice y/n ...
                         do
                         {
@@ -286,7 +289,7 @@ namespace AirlineReservationConsoleSystem
 
                     case 8://to cancel flight booking ...
                         char choice8;
-                        // do loop to repeat the process of book flight 
+                        // do loop to repeat the process of cancel flight booking 
                         //based on the user choice y/n ...
                         do
                         {
@@ -345,6 +348,142 @@ namespace AirlineReservationConsoleSystem
                             choice8 = Console.ReadKey().KeyChar;
                             Console.ReadLine();//just to hold second ...
                         } while (choice8 == 'y' || choice8 == 'Y');
+                        break;
+
+                    case 9://to calculate total fare ...
+                        char choice9;
+                        // do loop to repeat the process of calculate total fare 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            double price = 0;
+                            int TicketNumber = 0;
+                            int discount;
+                            char thereIsDiscount;
+                            Console.WriteLine("Plesae enter the following details to calculate total fare:");
+                            //to know if the user enter price or not ...
+                            try
+                            {
+                                Console.WriteLine("Price:");
+                                price = double.Parse(Console.ReadLine());
+                            }
+                            catch (Exception e)
+                            {
+                                price_isEmpty = true;
+                            }
+                            //to validate the price input ...
+                            bool flag_price = false;
+                            do
+                            {
+                                flag_price = false;
+                                //it must not be empty ...
+                                if (price_isEmpty)
+                                {
+                                    Console.WriteLine("Price not vaild it can not be empty");
+                                    flag_price = true;
+                                    if (flag_price)
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("Price:");
+                                            price = double.Parse(Console.ReadLine());
+                                            price_isEmpty = false;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            price_isEmpty = true;
+                                        }
+
+                                    }
+                                }
+                                //it must be > 0 ...
+                                if (price < 0)
+                                {
+                                    Console.WriteLine("Price is not vaild it must be > 0 ");
+                                    flag_price = true;
+                                    if (flag_price)
+                                    {
+                                        Console.WriteLine("Price:");
+                                        price = double.Parse(Console.ReadLine());
+                                    }
+                                }
+
+                            } while (flag_price);
+
+
+
+                            //to know if the user enter TicketNumber or not ...
+                            try
+                            {
+                                Console.WriteLine("Ticket number:");
+                                TicketNumber = int.Parse(Console.ReadLine());
+                            }
+                            catch(Exception e)
+                            {
+                                TicketNumber_isEmpty = true;
+                            }
+                            //to validate ticket number input ...
+                            bool flag_ticket = false;
+                            do
+                            {
+                                flag_ticket = false;
+                                //it must not be empty ...
+                                if (TicketNumber_isEmpty)
+                                {
+                                    Console.WriteLine("Ticket number not vaild it can not be empty");
+                                    flag_ticket = true;
+                                    if (flag_ticket)
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("Ticket number:");
+                                            TicketNumber = int.Parse(Console.ReadLine());
+                                            TicketNumber_isEmpty = false;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            TicketNumber_isEmpty = true;
+                                        }
+
+                                    }
+                                }
+                                //it must be > 0 ...
+                                if (TicketNumber < 0)
+                                {
+                                    Console.WriteLine("Ticket number is not vaild it must be > 0 ");
+                                    flag_ticket = true;
+                                    if (flag_ticket)
+                                    {
+                                        Console.WriteLine("Ticket number:");
+                                        TicketNumber = int.Parse(Console.ReadLine());
+                                    }
+                                }
+
+                            } while (flag_ticket);
+
+
+
+                            //to enter discount ...
+                            Console.WriteLine("Do you want to add discount y/n?");
+                            thereIsDiscount = char.Parse(Console.ReadLine());
+                            if(thereIsDiscount == 'y' || thereIsDiscount == 'Y')
+                            {
+                                Console.WriteLine("Enter discount:");
+                                discount = int.Parse(Console.ReadLine());
+                                //calling CalculateFare method ...
+                                Console.WriteLine("Your total fare: " + CalculateFare(price, TicketNumber, discount));
+                            }
+                            else
+                            {
+                                //calling CalculateFare method ...
+                                Console.WriteLine("Your total fare: " + CalculateFare(price, TicketNumber));
+                            }
+
+
+                            Console.WriteLine("Do you want to calculate total fare again? y / n");
+                            choice9 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice9 == 'y' || choice9 == 'Y');
                         break;
 
                     case 0:
@@ -421,6 +560,7 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("6. Display Flight Details");
             Console.WriteLine("7. Search Bookings By Destination");
             Console.WriteLine("8. Cancel Flight Booking");
+            Console.WriteLine("9. Calculate Total Fare");
 
             Console.WriteLine("0. Exit the system");
 
@@ -838,6 +978,42 @@ namespace AirlineReservationConsoleSystem
                 }
             }
         }
+
+
+
+
+        //Function Overloading (4) ........................................................
+        //1. CalculateFare(int basePrice, int numTickets)  ...
+        public static int CalculateFare(int basePrice, int numTickets)
+        {
+            int totalFare;
+            totalFare = basePrice * numTickets;
+            return totalFare;
+        }
+        //2. CalculateFare(double basePrice, int numTickets) ...
+        public static double CalculateFare(double basePrice, int numTickets)
+        {
+            double totalFare;
+            totalFare = basePrice * numTickets;
+            return totalFare;
+        }
+        //3. CalculateFare(int basePrice, int numTickets, int discount) ...
+        public static double CalculateFare(int basePrice, int numTickets, int discount)
+        {
+            double totalFare;
+            double discountAmount = (basePrice / 100) * discount;
+            totalFare = (basePrice * numTickets) - discountAmount;
+            return totalFare;
+        }
+        //4. CalculateFare(int basePrice, int numTickets, int discount) ...
+        public static double CalculateFare(double basePrice, int numTickets, int discount)
+        {
+            double totalFare;
+            double discountAmount = (basePrice / 100) * discount;
+            totalFare = (basePrice * numTickets) - discountAmount;
+            return totalFare;
+        }
+
 
 
 
