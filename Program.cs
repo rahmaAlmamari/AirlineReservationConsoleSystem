@@ -199,6 +199,52 @@ namespace AirlineReservationConsoleSystem
                         } while (choice5 == 'y' || choice5 == 'Y');
                         break;
 
+                    case 6://to display flight details ...
+                        char choice6;
+                        // do loop to repeat the process of book flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all flights wtih details ...
+                            DisplayAllFlights();
+                            //display flight details process start here ...
+                            string fCode_displayDetails;
+                            bool fCodeIsExist;
+                            Console.WriteLine("Please enter flight code to display it's details:");
+                            fCode_displayDetails = Console.ReadLine();
+                            //flightCode input process code ... 
+                            bool flag_flightCode;
+                            do
+                            {
+                                flag_flightCode = false;
+
+                                // Check for null or empty
+                                if (string.IsNullOrWhiteSpace(fCode_displayDetails))
+                                {
+                                    Console.WriteLine("Flight code cannot be empty. Please enter a valid flight code:");
+                                    fCode_displayDetails = Console.ReadLine();
+                                    flag_flightCode = true;
+                                    continue;
+                                }
+                            } while (flag_flightCode);
+                            //calling validate flight code ...
+                            fCodeIsExist = ValidateFlightCode(fCode_displayDetails);
+                            if (fCodeIsExist)
+                            {
+                                DisplayFlightDetails(fCode_displayDetails);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sorry flight code dose not exist!");
+                            }
+
+                            Console.WriteLine("Do you want to display anther" +
+                                                " flight code details? y / n");
+                            choice6 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice6 == 'y' || choice6 == 'Y');
+                        break;
+
                     case 0:
                         ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
@@ -267,8 +313,9 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("3. Find Flight By Code");
             Console.WriteLine("4. Update Flight Departure");
             Console.WriteLine("5. Book Flight");
-            Console.WriteLine("6. Cancel");
-            Console.WriteLine("7. View Flights");
+            Console.WriteLine("6. Display Flight Details");
+            Console.WriteLine("7. Cancel");
+            Console.WriteLine("8. View Flights");
 
             Console.WriteLine("0. Exit the system");
 
@@ -617,6 +664,29 @@ namespace AirlineReservationConsoleSystem
             return bookingID;
         }
         //4.DisplayFlightDetails(string code) ...
+        public static void DisplayFlightDetails(string code)
+        {
+            for(int i = 0; i < FlightCount; i++)
+            {
+                if(code == flightCode_array[i])
+                {
+                    int countPassengerNumber = 0;
+                    for(int j = 0; j < PassengerCount; j++)
+                    {
+                        if (passenger_BookingFlightIndex[j] == i)
+                        {
+                            countPassengerNumber++;
+                        }
+                    }
+                    Console.WriteLine("Flight code details:");
+                    Console.WriteLine("Flight Code | From City | To City | Departure Time | Duration | Seats | Number of Passenger");
+                    Console.WriteLine($"{code} | {fromCity_array[i]} " +
+                                      $"| {toCity_array[i]} | {departureTime_array[i]} " +
+                                      $"| {duration_array[i]} | {seatsNumber_array[i]} | {countPassengerNumber}");
+                    break;
+                }
+            }
+        }
         //5. SearchBookingsByDestination(string toCity) ...
 
         //ADDITIONAL METHODS ...
