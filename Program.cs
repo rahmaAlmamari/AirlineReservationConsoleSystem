@@ -245,6 +245,108 @@ namespace AirlineReservationConsoleSystem
                         } while (choice6 == 'y' || choice6 == 'Y');
                         break;
 
+                    case 7://to search bookings by destination ...
+                        char choice7;
+                        // do loop to repeat the process of book flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            string toCity_search;
+                            Console.WriteLine("Please enter the destination city you search for:");
+                            toCity_search = Console.ReadLine();
+                            //to validate toCity input ...
+                            bool flag_toCity;//to know if the toCity add or not ...
+                            do
+                            {
+                                flag_toCity = false;
+                                //to check if fromCity has number or not ...
+                                bool check_toCity = IsAlpha(toCity_search);
+                                if (check_toCity == false)
+                                {
+                                    Console.WriteLine("Destination city can not contains number and con not be null ..." +
+                                                      "please enter to city again");
+                                    flag_toCity = true;
+                                    if (flag_toCity)
+                                    {
+                                        Console.WriteLine("Flight to city:");
+                                        toCity_search = Console.ReadLine();
+                                    }
+                                }
+
+                            } while (flag_toCity);
+                            //search bookings by destination process start here ...
+                            SearchBookingsByDestination(toCity_search);
+
+                            Console.WriteLine("Do you want to search for anther bookings by " +
+                                               " destination? y / n");
+                            choice7 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice7 == 'y' || choice7 == 'Y');
+                        break;
+
+                    case 8://to cancel flight booking ...
+                        char choice8;
+                        // do loop to repeat the process of book flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all passenger details ...
+                            Console.WriteLine("All passenger details:");
+                            Console.WriteLine("Passenger ID | Passenger Name | Flight Code");
+                            for(int i = 0; i < PassengerCount; i++)
+                            {
+                                int index = passenger_BookingFlightIndex[i];
+                                Console.WriteLine($"{passengerBookingID_array[i]} | " +
+                                                  $"{passengerNames_array[i]} | " +
+                                                  $"{flightCode_array[index]}");
+                            }
+                            bool flage_cancel;
+                            bool flage_nameFound = false;
+                            string passengerNameToCansel;
+                            Console.WriteLine("Please enter passsenger name you want to cansel his booking:");
+                            passengerNameToCansel = Console.ReadLine();
+                            do
+                            {
+                                flage_cancel = false;
+                                // Check for null or empty
+                                if (string.IsNullOrWhiteSpace(passengerNameToCansel))
+                                {
+                                    Console.WriteLine("Passenger name cannot be empty. Please enter a valide passenger name:");
+                                    passengerNameToCansel = Console.ReadLine();
+                                    flage_cancel = true;
+                                    continue;
+                                }
+                                //to check if passenger name exist or not ...
+                                for (int i = 0; i < PassengerCount; i++)
+                                {
+                                    if(passengerNameToCansel == passengerNames_array[i])
+                                    {
+                                        flage_cancel = false;
+                                        flage_nameFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!flage_nameFound)
+                                {
+                                    Console.WriteLine("Passenger name not found. Please enter a valid name:");
+                                    passengerNameToCansel = Console.ReadLine();
+                                    flage_cancel = true;
+                                }
+
+                            } while (flage_cancel);
+                           
+                            //to get index for passenger name ...
+                            int nameIndex = Array.IndexOf(passengerNames_array, passengerNameToCansel);
+                            //cancel flight booking process start here ....
+                            CancelFlightBooking(out passengerNameToCansel, nameIndex);
+
+                            Console.WriteLine("Do you want to search for anther bookings by " +
+                                           " destination? y / n");
+                            choice8 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice8 == 'y' || choice8 == 'Y');
+                        break;
+
                     case 0:
                         ExitApplication();
                         //using return to stop the whole method so the whole program stop ...
@@ -293,7 +395,10 @@ namespace AirlineReservationConsoleSystem
             return actionStatus;
         }
 
-        //Startup & Navigation (4) ...
+
+
+
+        //Startup & Navigation (4) ....................................................................
         //1. DisplayWelcomeMessage() ...
         public static void DisplayWelcomeMessage()
         {
@@ -314,8 +419,8 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("4. Update Flight Departure");
             Console.WriteLine("5. Book Flight");
             Console.WriteLine("6. Display Flight Details");
-            Console.WriteLine("7. Cancel");
-            Console.WriteLine("8. View Flights");
+            Console.WriteLine("7. Search Bookings By Destination");
+            Console.WriteLine("8. Cancel Flight Booking");
 
             Console.WriteLine("0. Exit the system");
 
@@ -497,7 +602,11 @@ namespace AirlineReservationConsoleSystem
             Console.WriteLine("Flight add successfully ...");
         }
 
-        //Flight and Passenger Management (4) ...
+
+
+
+
+        //Flight and Passenger Management (4) .................................................
         //1. DisplayAllFlights() ...
         public static void DisplayAllFlights()
         {
@@ -567,8 +676,35 @@ namespace AirlineReservationConsoleSystem
            
         }
         //4. CancelFlightBooking(out string passengerName) ...
+        public static void CancelFlightBooking(out string passengerName, int nameIndex)
+        {
+            passengerName = passengerNames_array[nameIndex];
+            //to confirm the action of cancel the flight booking ...
+            bool result = ConfirmAction("Cancel Flight Booking");
+            if (result)
+            {
+                //to loop through all passengerNames_array and passengerBookingID_array
+                //elements after passengerName we want to cancel ...
+                for (int i = nameIndex; i < PassengerCount; i++)
+                {
+                    //to move passengerNames_array and passengerBookingID_array
+                    //elements one step forwad to cancel passengerName ...
+                    passengerNames_array[i] = passengerNames_array[i + 1];
+                    passengerBookingID_array[i] = passengerBookingID_array[i + 1];
+                }
+                //to let the system know that there is passenger booking cancel ...
+                PassengerCount--;
+                Console.WriteLine("Cancel flight booking process done successfully");
+            }
+            else
+            {
+                Console.WriteLine("Cancel flight booking process stoped!");
+            }
+        }
 
-        //Passenger Booking Functions (5) ...
+
+
+        //Passenger Booking Functions (5) ...........................................................
         //1. BookFlight(string passengerName, string flightCode = "Default001") ...
         public static void BookFlight(string passengerName, string flightCode = "Default001")
         {
@@ -688,8 +824,24 @@ namespace AirlineReservationConsoleSystem
             }
         }
         //5. SearchBookingsByDestination(string toCity) ...
+        public static void SearchBookingsByDestination(string toCity)
+        {
+            //to get toCity_search index ...
+            int index = Array.IndexOf(toCity_array, toCity);
+            Console.WriteLine($"Dooking details based {toCity} as destination are:");
+            Console.WriteLine("Passenger ID | Passenger Name");
+            for (int i = 0; i < PassengerCount; i++)
+            {
+                if (index == passenger_BookingFlightIndex[i])
+                {
+                    Console.WriteLine($"{passengerBookingID_array[i]} | {passengerNames_array[i]}");
+                }
+            }
+        }
 
-        //ADDITIONAL METHODS ...
+
+
+        //ADDITIONAL METHODS .............................................................
         //1. To check of the string contains something other than letters like number and empty space(this methos return true or false)....
         static bool IsAlpha(string input)
         {
