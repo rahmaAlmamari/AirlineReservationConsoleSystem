@@ -187,33 +187,24 @@ namespace AirlineReservationConsoleSystem
 
                             //booking process ...
                             string passengerName_Book;
-                            string f_code_book = "null";
+                            string f_code_book;
                             Console.WriteLine("Please enter booking details:");
-                            try
-                            {
-                                Console.WriteLine("Flight code:");
-                                f_code_book = Console.ReadLine();
-                                Book_fCodeIsEmpty = false;
-                            }
-                            catch(Exception e)
-                            {
-                                Book_fCodeIsEmpty = true;
-                            }
+                            Console.WriteLine("Flight code (press ENTER to skip):");
+                            f_code_book = Console.ReadLine();
                             Console.WriteLine("Passenger Name:");
                             passengerName_Book = Console.ReadLine();
-
                             //calling BookFlight based on flight code input ...
-                            if (Book_fCodeIsEmpty)
+                            if (string.IsNullOrWhiteSpace(f_code_book))
                             {
-                                //calling BookFlight() method ...
+                                // No flight code entered, use default
                                 BookFlight(passengerName_Book);
                             }
                             else
                             {
-                                //calling BookFlight() method ...
+                                // Use entered flight code
                                 BookFlight(passengerName_Book, f_code_book);
                             }
-                           
+
 
                             Console.WriteLine("Do you want to book anther" +
                                               " flight? y / n");
@@ -884,41 +875,65 @@ namespace AirlineReservationConsoleSystem
                     flag_BookFlight = true;
                     continue;
                 }
+                // If using the default flight code, accept it without searching
+                if (flightCode == "Default001")
+                {
+                    booking_index = MAX_FLIGHT - 1;
+                    break; // Exit the loop, default is accepted
+                }
 
-                //to search for flight code ...
+                // Try to find the flight code in the array
+                bool foundFlight = false;
                 for (int i = 0; i < FlightCount; i++)
                 {
                     if (flightCode == flightCode_array[i])
                     {
-                        flag_BookFlight = false;
                         booking_index = i;
+                        foundFlight = true;
                         break;
-                    }
-                    else if (flightCode == "Default001")
-                    {
-                        flag_BookFlight = false;
-                        booking_index = MAX_FLIGHT - 1;
-                        break;
-                    }
-                    else
-                    {
-                        flag_BookFlight = true;
                     }
                 }
 
-            } while (flag_BookFlight);
-            //to check if there is seat left to book in the flight ...
-            for(int i = 0; i < PassengerCount; i++)
-            {
-                if(booking_index == passenger_BookingFlightIndex[i])
+                if (!foundFlight)
                 {
-                    count_seat++;
+                    Console.WriteLine("Flight code not found. Please enter a valid flight code:");
+                    flightCode = Console.ReadLine();
+                    flag_BookFlight = true;
+                }
+
+                } while (flag_BookFlight);
+            //to check if there is seat left to book in the flight ...
+            if(flightCode == "Default001")
+            {
+                //to set a seat number for the default flight code ...
+                count_seat = 2;
+            }
+            else
+            {
+                //to get flight seats number of the flight code ...
+                for (int i = 0; i < PassengerCount; i++)
+                {
+                    if (booking_index == passenger_BookingFlightIndex[i])
+                    {
+                        count_seat++;
+                    }
                 }
             }
             //to store booking detalis ...
+            //to know if flight code is a default or not and store based on that ...
+            int seat = 0;
+            if(flightCode == "Default001")
+            {
+                seat = 5;
+            }
+            else
+            {
+                seat = seatsNumber_array[booking_index];
+            }
+            //store process ...
             if (!flag_BookFlight)
             {
-                if(count_seat >= seatsNumber_array[booking_index])
+                if(count_seat >= seat)
                 {
                     Console.WriteLine("Sorry there is no more seats in this flight!");
                     //return;
