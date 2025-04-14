@@ -796,6 +796,7 @@ namespace AirlineReservationConsoleSystem
                     if (code == flightCode_array[i])
                     {
                         found = true;
+                        break;
                     }
                     else
                     {
