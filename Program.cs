@@ -33,18 +33,50 @@ namespace AirlineReservationConsoleSystem
         //Main method ...
         static void Main(string[] args)
         {
-            //calling StartSystem() to run the program ...
-            StartSystem();
+            //calling DisplayWelcomeMessage() function ...
+            DisplayWelcomeMessage();
+            //just to hold a second ...
+            Console.ReadLine();
+            bool systemRepeat;
+            do
+            {
+                systemRepeat = false;
+                //to get user chioce if he want to use the system with array or list ...
+                int system = 0;
+                Console.WriteLine("System run chioces:\n 1. Array\n 2. List");
+                Console.WriteLine("Please enter your chioces:");
+                try
+                {
+                    system = int.Parse(Console.ReadLine());
+                }catch(Exception e)
+                {
+                    system = 3;
+                }
+                
+                if (system == 1)
+                {
+                    //Array System ....................................
+                    //calling StartSystem() to run the program as array ...
+                    StartSystem();
+                }
+                else if (system == 2)
+                {
+                    //List System ...................................
+                    //calling StartSystemList() to run the program as array ...
+                    StartSystemList();
+                }
+                else
+                {
+                    Console.WriteLine("Sorry ... you enter a wrong input! enter 1 or 2");
+                    systemRepeat = true;
+                }
+            } while (systemRepeat);
         }
 
         //System Utilities & Final Flow Function (2)...
         //1. StartSystem() ...
         public static void StartSystem()
         {
-            //calling DisplayWelcomeMessage() function ...
-            DisplayWelcomeMessage();
-            //just to hold a second ...
-            Console.ReadLine();
             // we use while loop to repeat the process and we set true so it will not stop ... 
             while (true)
             {
@@ -511,6 +543,475 @@ namespace AirlineReservationConsoleSystem
                 Console.ReadLine();
             }
         }
+        //1. StartSystemList() ...
+        public static void StartSystemList()
+        {
+            // we use while loop to repeat the process and we set true so it will not stop ... 
+            while (true)
+            {
+                //run switch to access the services user want based on user choice ...
+                switch (ShowMainMenuList())
+                {
+                    case 1://to add new flight ...
+                        char choice1;
+                        // do loop to repeat the process of adding new Flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            Console.Clear();
+                            //to make such that the user do not enter record more than
+                            // the arraies size ...
+                            if (FlightCount < MAX_FLIGHT)
+                            {
+                                Console.WriteLine("Please enter the following info:");
+                                //declare variables to holde flight info ...
+                                string f_Code;
+                                string f_fromCity = "Null";
+                                string f_toCity = "Null";
+                                DateTime f_departureTime;
+                                int f_seatsNumber = 0;
+                                int f_duration = 0;
+                                Console.WriteLine("Flight code:");
+                                f_Code = Console.ReadLine();
+                                Console.WriteLine("Flight from city:");
+                                f_fromCity = Console.ReadLine();
+                                Console.WriteLine("Flight to city:");
+                                f_toCity = Console.ReadLine();
+                                f_departureTime = InputFlightDepartureTimeValide();
+                                try
+                                {
+                                    Console.WriteLine("Flight duration:");
+                                    f_duration = int.Parse(Console.ReadLine());
+                                }
+                                catch (Exception e)
+                                {
+                                    duration_isEmpty = true;
+                                }
+                                try
+                                {
+                                    Console.WriteLine("Flight seats number:");
+                                    f_seatsNumber = int.Parse(Console.ReadLine());
+                                }
+                                catch (Exception e)
+                                {
+                                    seats_isEmpty = true;
+                                }
+
+                                //calling the AddFlight method ...
+                                AddFlight(flightCode: f_Code, fromCity: f_fromCity,
+                                          toCity: f_toCity, departureTime: f_departureTime,
+                                          duration: f_duration, seats: f_seatsNumber);
+                                Console.WriteLine("Do you want to add anther Flight? y / n");
+                                choice1 = Console.ReadKey().KeyChar;
+                                Console.ReadLine();//just to hold second ...
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sory you can not add more Flight there are no space remain!");
+                                Console.WriteLine();
+                                choice1 = 'n';
+                            }
+
+                        } while (choice1 == 'y' || choice1 == 'Y');
+                        break;
+
+                    case 2://to display all flight ...
+                        DisplayAllFlights();
+                        break;
+
+                    case 3://to find flight by code ...
+                        string f_code;
+                        Console.WriteLine("Enter flight code you want to search for:");
+                        f_code = Console.ReadLine();
+                        bool result = FindFlightByCode(f_code);
+                        if (result)
+                        {
+                            Console.WriteLine("Flight code is found");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Flight code not found");
+                        }
+                        break;
+
+                    case 4://to update flight departure ...
+                        char choice4;
+                        // do loop to repeat the process of update flight departure 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all flights wtih details ...
+                            DisplayAllFlights();
+                            //update process start here ...
+                            string updateFcode;
+                            //DateTime updateDeparture;
+                            Console.WriteLine("Enter flight code to update departure:");
+                            updateFcode = Console.ReadLine();
+                            //to check if flight code exis or not ...
+                            bool flag_fCode = false;
+                            for (int i = 0; i < FlightCount; i++)
+                            {
+                                if (updateFcode == flightCode_array[i])
+                                {
+                                    flag_fCode = false;
+                                    Console.WriteLine("This flight code has departure time as: "
+                                                      + departureTime_array[i]);
+                                    departureTime_index = i;
+                                    ValidateFlightDepartureTime_Update(i);
+
+                                    break;
+                                }
+                                else
+                                {
+                                    flag_fCode = true;
+                                }
+                            }
+                            if (flag_fCode)
+                            {
+                                Console.WriteLine("Sorry flight code you enter dose not exit!");
+                            }
+                            Console.WriteLine("Do you want to update anther" +
+                                              " flight departure time? y / n");
+                            choice4 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice4 == 'y' || choice4 == 'Y');
+                        break;
+
+                    case 5://to Book Flight ...
+                        char choice5;
+                        // do loop to repeat the process of book flight 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all flights wtih details ...
+                            DisplayAllFlights();
+
+                            //booking process ...
+                            string passengerName_Book;
+                            string f_code_book;
+                            Console.WriteLine("Please enter booking details:");
+                            Console.WriteLine("Flight code (press ENTER to skip):");
+                            f_code_book = Console.ReadLine();
+                            Console.WriteLine("Passenger Name:");
+                            passengerName_Book = Console.ReadLine();
+                            //calling BookFlight based on flight code input ...
+                            if (string.IsNullOrWhiteSpace(f_code_book))
+                            {
+                                // No flight code entered, use default
+                                BookFlight(passengerName_Book);
+                            }
+                            else
+                            {
+                                // Use entered flight code
+                                BookFlight(passengerName_Book, f_code_book);
+                            }
+
+
+                            Console.WriteLine("Do you want to book anther" +
+                                              " flight? y / n");
+                            choice5 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice5 == 'y' || choice5 == 'Y');
+                        break;
+
+                    case 6://to display flight details ...
+                        char choice6;
+                        // do loop to repeat the process of display flight details
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all flights wtih details ...
+                            DisplayAllFlights();
+                            //display flight details process start here ...
+                            string fCode_displayDetails;
+                            bool fCodeIsExist;
+                            Console.WriteLine("Please enter flight code to display it's details:");
+                            fCode_displayDetails = Console.ReadLine();
+                            //flightCode input process code ... 
+                            bool flag_flightCode;
+                            do
+                            {
+                                flag_flightCode = false;
+
+                                // Check for null or empty
+                                if (string.IsNullOrWhiteSpace(fCode_displayDetails))
+                                {
+                                    Console.WriteLine("Flight code cannot be empty. Please enter a valid flight code:");
+                                    fCode_displayDetails = Console.ReadLine();
+                                    flag_flightCode = true;
+                                    continue;
+                                }
+                            } while (flag_flightCode);
+                            //calling validate flight code ...
+                            fCodeIsExist = ValidateFlightCode(fCode_displayDetails);
+                            if (fCodeIsExist)
+                            {
+                                DisplayFlightDetails(fCode_displayDetails);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sorry flight code dose not exist!");
+                            }
+
+                            Console.WriteLine("Do you want to display anther" +
+                                                " flight code details? y / n");
+                            choice6 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice6 == 'y' || choice6 == 'Y');
+                        break;
+
+                    case 7://to search bookings by destination ...
+                        char choice7;
+                        // do loop to repeat the process of search bookings by destination 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            string toCity_search;
+                            Console.WriteLine("Please enter the destination city you search for:");
+                            toCity_search = Console.ReadLine();
+                            //to validate toCity input ...
+                            bool flag_toCity;//to know if the toCity add or not ...
+                            do
+                            {
+                                flag_toCity = false;
+                                //to check if fromCity has number or not ...
+                                bool check_toCity = IsAlpha(toCity_search);
+                                if (check_toCity == false)
+                                {
+                                    Console.WriteLine("Destination city can not contains number and con not be null ..." +
+                                                      "please enter to city again");
+                                    flag_toCity = true;
+                                    if (flag_toCity)
+                                    {
+                                        Console.WriteLine("Flight to city:");
+                                        toCity_search = Console.ReadLine();
+                                    }
+                                }
+
+                            } while (flag_toCity);
+                            //search bookings by destination process start here ...
+                            SearchBookingsByDestination(toCity_search);
+
+                            Console.WriteLine("Do you want to search for anther bookings by " +
+                                               " destination? y / n");
+                            choice7 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice7 == 'y' || choice7 == 'Y');
+                        break;
+
+                    case 8://to cancel flight booking ...
+                        char choice8;
+                        // do loop to repeat the process of cancel flight booking 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            //to display all passenger details ...
+                            Console.WriteLine("All passenger details:");
+                            Console.WriteLine("Passenger ID | Passenger Name | Flight Code");
+                            for (int i = 0; i < PassengerCount; i++)
+                            {
+                                int index = passenger_BookingFlightIndex[i];
+                                Console.WriteLine($"{passengerBookingID_array[i]} | " +
+                                                  $"{passengerNames_array[i]} | " +
+                                                  $"{flightCode_array[index]}");
+                            }
+                            bool flage_cancel;
+                            bool flage_nameFound = false;
+                            string passengerNameToCansel;
+                            Console.WriteLine("Please enter passsenger name you want to cansel his booking:");
+                            passengerNameToCansel = Console.ReadLine();
+                            do
+                            {
+                                flage_cancel = false;
+                                // Check for null or empty
+                                if (string.IsNullOrWhiteSpace(passengerNameToCansel))
+                                {
+                                    Console.WriteLine("Passenger name cannot be empty. Please enter a valide passenger name:");
+                                    passengerNameToCansel = Console.ReadLine();
+                                    flage_cancel = true;
+                                    continue;
+                                }
+                                //to check if passenger name exist or not ...
+                                for (int i = 0; i < PassengerCount; i++)
+                                {
+                                    if (passengerNameToCansel == passengerNames_array[i])
+                                    {
+                                        flage_cancel = false;
+                                        flage_nameFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!flage_nameFound)
+                                {
+                                    Console.WriteLine("Passenger name not found. Please enter a valid name:");
+                                    passengerNameToCansel = Console.ReadLine();
+                                    flage_cancel = true;
+                                }
+
+                            } while (flage_cancel);
+
+                            //to get index for passenger name ...
+                            int nameIndex = Array.IndexOf(passengerNames_array, passengerNameToCansel);
+                            //cancel flight booking process start here ....
+                            CancelFlightBooking(out passengerNameToCansel, nameIndex);
+
+                            Console.WriteLine("Do you want to search for anther bookings by " +
+                                           " destination? y / n");
+                            choice8 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice8 == 'y' || choice8 == 'Y');
+                        break;
+
+                    case 9://to calculate total fare ...
+                        char choice9;
+                        // do loop to repeat the process of calculate total fare 
+                        //based on the user choice y/n ...
+                        do
+                        {
+                            double price = 0;
+                            int TicketNumber = 0;
+                            int discount;
+                            char thereIsDiscount;
+                            Console.WriteLine("Plesae enter the following details to calculate total fare:");
+                            //to know if the user enter price or not ...
+                            try
+                            {
+                                Console.WriteLine("Price:");
+                                price = double.Parse(Console.ReadLine());
+                            }
+                            catch (Exception e)
+                            {
+                                price_isEmpty = true;
+                            }
+                            //to validate the price input ...
+                            bool flag_price = false;
+                            do
+                            {
+                                flag_price = false;
+                                //it must not be empty ...
+                                if (price_isEmpty)
+                                {
+                                    Console.WriteLine("Price not vaild it can not be empty");
+                                    flag_price = true;
+                                    if (flag_price)
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("Price:");
+                                            price = double.Parse(Console.ReadLine());
+                                            price_isEmpty = false;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            price_isEmpty = true;
+                                        }
+
+                                    }
+                                }
+                                //it must be > 0 ...
+                                if (price < 0)
+                                {
+                                    Console.WriteLine("Price is not vaild it must be > 0 ");
+                                    flag_price = true;
+                                    if (flag_price)
+                                    {
+                                        Console.WriteLine("Price:");
+                                        price = double.Parse(Console.ReadLine());
+                                    }
+                                }
+
+                            } while (flag_price);
+
+
+
+                            //to know if the user enter TicketNumber or not ...
+                            try
+                            {
+                                Console.WriteLine("Ticket number:");
+                                TicketNumber = int.Parse(Console.ReadLine());
+                            }
+                            catch (Exception e)
+                            {
+                                TicketNumber_isEmpty = true;
+                            }
+                            //to validate ticket number input ...
+                            bool flag_ticket = false;
+                            do
+                            {
+                                flag_ticket = false;
+                                //it must not be empty ...
+                                if (TicketNumber_isEmpty)
+                                {
+                                    Console.WriteLine("Ticket number not vaild it can not be empty");
+                                    flag_ticket = true;
+                                    if (flag_ticket)
+                                    {
+                                        try
+                                        {
+                                            Console.WriteLine("Ticket number:");
+                                            TicketNumber = int.Parse(Console.ReadLine());
+                                            TicketNumber_isEmpty = false;
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            TicketNumber_isEmpty = true;
+                                        }
+
+                                    }
+                                }
+                                //it must be > 0 ...
+                                if (TicketNumber < 0)
+                                {
+                                    Console.WriteLine("Ticket number is not vaild it must be > 0 ");
+                                    flag_ticket = true;
+                                    if (flag_ticket)
+                                    {
+                                        Console.WriteLine("Ticket number:");
+                                        TicketNumber = int.Parse(Console.ReadLine());
+                                    }
+                                }
+
+                            } while (flag_ticket);
+
+
+
+                            //to enter discount ...
+                            Console.WriteLine("Do you want to add discount y/n?");
+                            thereIsDiscount = char.Parse(Console.ReadLine());
+                            if (thereIsDiscount == 'y' || thereIsDiscount == 'Y')
+                            {
+                                Console.WriteLine("Enter discount:");
+                                discount = int.Parse(Console.ReadLine());
+                                //calling CalculateFare method ...
+                                Console.WriteLine("Your total fare: " + CalculateFare(price, TicketNumber, discount));
+                            }
+                            else
+                            {
+                                //calling CalculateFare method ...
+                                Console.WriteLine("Your total fare: " + CalculateFare(price, TicketNumber));
+                            }
+
+
+                            Console.WriteLine("Do you want to calculate total fare again? y / n");
+                            choice9 = Console.ReadKey().KeyChar;
+                            Console.ReadLine();//just to hold second ...
+                        } while (choice9 == 'y' || choice9 == 'Y');
+                        break;
+
+                    case 0:
+                        ExitApplication();
+                        //using return to stop the whole method so the whole program stop ...
+                        return;
+
+                    default:
+                        Console.WriteLine("\n You enter unaccepted option! ... to try again click enter key");
+                        break;
+                }
+                // we add this line just to stop the program from clear 'Console.Clear();'
+                // the screen before the user see the result ...
+                Console.ReadLine();
+            }
+        }
         //2. ConfirmAction(string action) ...
         public static bool ConfirmAction(string action)
         {
@@ -562,7 +1063,32 @@ namespace AirlineReservationConsoleSystem
             int menuChoice = 0;
             //just to clear the screen ...
             Console.Clear();
-            Console.WriteLine("System Menu please select option:\n");
+            Console.WriteLine("System array menu please select option:\n");
+            Console.WriteLine("1. Add Flight");
+            Console.WriteLine("2. Display All Flights");
+            Console.WriteLine("3. Find Flight By Code");
+            Console.WriteLine("4. Update Flight Departure");
+            Console.WriteLine("5. Book Flight");
+            Console.WriteLine("6. Display Flight Details");
+            Console.WriteLine("7. Search Bookings By Destination");
+            Console.WriteLine("8. Cancel Flight Booking");
+            Console.WriteLine("9. Calculate Total Fare");
+
+            Console.WriteLine("0. Exit the system");
+
+            Console.Write("\nEnter your option: \n");
+            menuChoice = int.Parse(Console.ReadLine());
+
+            return menuChoice;
+        }
+        //2. ShowMainMenu() ...
+        public static int ShowMainMenuList()
+        {
+            //to store user choice in avriable ...
+            int menuChoice = 0;
+            //just to clear the screen ...
+            Console.Clear();
+            Console.WriteLine("System list menu please select option:\n");
             Console.WriteLine("1. Add Flight");
             Console.WriteLine("2. Display All Flights");
             Console.WriteLine("3. Find Flight By Code");
@@ -828,6 +1354,7 @@ namespace AirlineReservationConsoleSystem
            
         }
         //4. CancelFlightBooking(out string passengerName) ...
+
         public static void CancelFlightBooking(out string passengerName, int nameIndex)
         {
             passengerName = passengerNames_array[nameIndex];
