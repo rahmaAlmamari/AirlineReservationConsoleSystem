@@ -622,7 +622,7 @@ namespace AirlineReservationConsoleSystem
                         string f_code;
                         Console.WriteLine("Enter flight code you want to search for:");
                         f_code = Console.ReadLine();
-                        bool result = FindFlightByCode(f_code);
+                        bool result = FindFlightByCodeList(f_code);
                         if (result)
                         {
                             Console.WriteLine("Flight code is found");
@@ -1523,6 +1523,44 @@ namespace AirlineReservationConsoleSystem
 
             return found;
             
+        }
+        //2. FindFlightByCode(string code) ...
+        public static bool FindFlightByCodeList(string code)
+        {
+            bool found = false;
+            //flightCode search process code ... 
+            bool flag_flightCode;
+            do
+            {
+                flag_flightCode = false;
+
+                //to check for null or empty
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    Console.WriteLine("Flight code cannot be empty. Please enter a valid flight code:");
+                    code = Console.ReadLine();
+                    flag_flightCode = true;
+                    continue;
+                }
+
+                //to search for flight code ...
+                for (int i = 0; i < flightCode_List.Count; i++)
+                {
+                    if (code == flightCode_List[i])
+                    {
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        found = false;
+                    }
+                }
+
+            } while (flag_flightCode);
+
+            return found;
+
         }
         //3. UpdateFlightDeparture(ref DateTime departure) ...
         public static void UpdateFlightDeparture(ref DateTime OriginalDeparture, 
