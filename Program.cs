@@ -615,7 +615,7 @@ namespace AirlineReservationConsoleSystem
                         break;
 
                     case 2://to display all flight ...
-                        DisplayAllFlights();
+                        DisplayAllFlightsList();
                         break;
 
                     case 3://to find flight by code ...
@@ -1462,6 +1462,28 @@ namespace AirlineReservationConsoleSystem
                 Console.WriteLine($"{flightCode_array[i]} | {fromCity_array[i]} " +
                                   $"| {toCity_array[i]} | {departureTime_array[i]} " +
                                   $"| {duration_array[i]} | {seatsNumber_array[i]}");
+            }
+        }
+        //1. DisplayAllFlightsList() ...
+        public static void DisplayAllFlightsList()
+        {
+            //to check if there are flight or not ...
+            if(flightCode_List.Count == 0)
+            {
+                Console.WriteLine("Sorry there is no flights added to the system yet!");
+            }
+            //to print flight in the system ...
+            else
+            {
+                Console.WriteLine("Flight information:");
+                Console.WriteLine("Flight Code | From City | To City | Departure Time | Duration | Seats");
+                //loop to show all flight info for all records ...
+                for (int i = 0; i < flightCode_List.Count; i++)
+                {
+                    Console.WriteLine($"{flightCode_List[i]} | {fromCity_List[i]} " +
+                                      $"| {toCity_List[i]} | {departureTime_List[i]} " +
+                                      $"| {duration_List[i]} | {seatsNumber_List[i]}");
+                }
             }
         }
         //2. FindFlightByCode(string code) ...
