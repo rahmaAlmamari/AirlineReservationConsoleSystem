@@ -640,7 +640,7 @@ namespace AirlineReservationConsoleSystem
                         do
                         {
                             //to display all flights wtih details ...
-                            DisplayAllFlights();
+                            DisplayAllFlightsList();
                             //update process start here ...
                             string updateFcode;
                             //DateTime updateDeparture;
@@ -648,15 +648,15 @@ namespace AirlineReservationConsoleSystem
                             updateFcode = Console.ReadLine();
                             //to check if flight code exis or not ...
                             bool flag_fCode = false;
-                            for (int i = 0; i < FlightCount; i++)
+                            for (int i = 0; i < flightCode_List.Count; i++)
                             {
-                                if (updateFcode == flightCode_array[i])
+                                if (updateFcode == flightCode_List[i])
                                 {
                                     flag_fCode = false;
                                     Console.WriteLine("This flight code has departure time as: "
-                                                      + departureTime_array[i]);
+                                                      + departureTime_List[i]);
                                     departureTime_index = i;
-                                    ValidateFlightDepartureTime_Update(i);
+                                    ValidateFlightDepartureTime_UpdateList(i);
 
                                     break;
                                 }
@@ -683,7 +683,7 @@ namespace AirlineReservationConsoleSystem
                         do
                         {
                             //to display all flights wtih details ...
-                            DisplayAllFlights();
+                            DisplayAllFlightsList();
 
                             //booking process ...
                             string passengerName_Book;
@@ -1912,6 +1912,28 @@ namespace AirlineReservationConsoleSystem
 
             //call UpdateFlightDeparture() method to update the valide DateTime ...
             UpdateFlightDeparture(ref departureTime_array[index], final_departure);
+        }
+        //3. Validate flight departure time ...
+        public static void ValidateFlightDepartureTime_UpdateList(int index)
+        {
+            DateTime final_departure = InputFlightDepartureTimeValide();
+            /*
+             * A List<T> uses an indexer (list[index]) that returns a copy of the element,
+             * not a reference. Since it's not a ref return,
+             * C# doesn't allow you to pass it as ref or out.
+             * How to fix:
+             * Copy the value out and assign it back after manipulation:
+             * int temp = list[0];
+             * SomeMethod(ref temp);
+             * list[0] = temp; // Save it back if needed
+             */
+            DateTime originalDepartureTimeList = departureTime_List[index];
+
+            //call UpdateFlightDeparture() method to update the valide DateTime ...
+            UpdateFlightDeparture(ref originalDepartureTimeList, final_departure);
+
+            departureTime_List[index] = originalDepartureTimeList;
+
         }
 
 
