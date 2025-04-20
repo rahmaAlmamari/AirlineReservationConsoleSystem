@@ -724,7 +724,7 @@ namespace AirlineReservationConsoleSystem
                         do
                         {
                             //to display all flights wtih details ...
-                            DisplayAllFlights();
+                            DisplayAllFlightsList();
                             //display flight details process start here ...
                             string fCode_displayDetails;
                             bool fCodeIsExist;
