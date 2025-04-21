@@ -793,7 +793,7 @@ namespace AirlineReservationConsoleSystem
 
                             } while (flag_toCity);
                             //search bookings by destination process start here ...
-                            SearchBookingsByDestination(toCity_search);
+                            SearchBookingsByDestination_List(toCity_search);
 
                             Console.WriteLine("Do you want to search for anther bookings by " +
                                                " destination? y / n");
@@ -1902,6 +1902,21 @@ namespace AirlineReservationConsoleSystem
                 if (index == passenger_BookingFlightIndex[i])
                 {
                     Console.WriteLine($"{passengerBookingID_array[i]} | {passengerNames_array[i]}");
+                }
+            }
+        }
+        //5. SearchBookingsByDestination_List(string toCity) ...
+        public static void SearchBookingsByDestination_List(string toCity)
+        {
+            //to get toCity_search index ...
+            int index = toCity_List.IndexOf(toCity);
+            Console.WriteLine($"Dooking details based {toCity} as destination are:");
+            Console.WriteLine("Passenger ID | Passenger Name");
+            for (int i = 0; i < passengerNames_List.Count; i++)
+            {
+                if (index == passenger_BookingFlightIndex_List[i])
+                {
+                    Console.WriteLine($"{passengerBookingID_List[i]} | {passengerNames_List[i]}");
                 }
             }
         }
