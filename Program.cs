@@ -746,10 +746,10 @@ namespace AirlineReservationConsoleSystem
                                 }
                             } while (flag_flightCode);
                             //calling validate flight code ...
-                            fCodeIsExist = ValidateFlightCode(fCode_displayDetails);
+                            fCodeIsExist = ValidateFlightCodeList(fCode_displayDetails);
                             if (fCodeIsExist)
                             {
-                                DisplayFlightDetails(fCode_displayDetails);
+                                DisplayFlightDetails_List(fCode_displayDetails);
                             }
                             else
                             {
@@ -1862,6 +1862,30 @@ namespace AirlineReservationConsoleSystem
                     Console.WriteLine($"{code} | {fromCity_array[i]} " +
                                       $"| {toCity_array[i]} | {departureTime_array[i]} " +
                                       $"| {duration_array[i]} | {seatsNumber_array[i]} | {countPassengerNumber}");
+                    break;
+                }
+            }
+        }
+        //4.DisplayFlightDetails_List(string code) ...
+        public static void DisplayFlightDetails_List(string code)
+        {
+            for (int i = 0; i < flightCode_List.Count; i++)
+            {
+                if (code == flightCode_List[i])
+                {
+                    int countPassengerNumber = 0;
+                    for (int j = 0; j < passengerNames_List.Count; j++)
+                    {
+                        if (passenger_BookingFlightIndex_List[j] == i)
+                        {
+                            countPassengerNumber++;
+                        }
+                    }
+                    Console.WriteLine("Flight code details:");
+                    Console.WriteLine("Flight Code | From City | To City | Departure Time | Duration | Seats | Number of Passenger");
+                    Console.WriteLine($"{code} | {fromCity_List[i]} " +
+                                      $"| {toCity_List[i]} | {departureTime_List[i]} " +
+                                      $"| {duration_List[i]} | {seatsNumber_List[i]} | {countPassengerNumber}");
                     break;
                 }
             }
