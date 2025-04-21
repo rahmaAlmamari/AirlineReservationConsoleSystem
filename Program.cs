@@ -811,12 +811,12 @@ namespace AirlineReservationConsoleSystem
                             //to display all passenger details ...
                             Console.WriteLine("All passenger details:");
                             Console.WriteLine("Passenger ID | Passenger Name | Flight Code");
-                            for (int i = 0; i < PassengerCount; i++)
+                            for (int i = 0; i < passengerNames_List.Count; i++)
                             {
-                                int index = passenger_BookingFlightIndex[i];
-                                Console.WriteLine($"{passengerBookingID_array[i]} | " +
-                                                  $"{passengerNames_array[i]} | " +
-                                                  $"{flightCode_array[index]}");
+                                int index = passenger_BookingFlightIndex_List[i];
+                                Console.WriteLine($"{passengerBookingID_List[i]} | " +
+                                                  $"{passengerNames_List[i]} | " +
+                                                  $"{flightCode_List[index]}");
                             }
                             bool flage_cancel;
                             bool flage_nameFound = false;
@@ -835,9 +835,9 @@ namespace AirlineReservationConsoleSystem
                                     continue;
                                 }
                                 //to check if passenger name exist or not ...
-                                for (int i = 0; i < PassengerCount; i++)
+                                for (int i = 0; i < passengerNames_List.Count; i++)
                                 {
-                                    if (passengerNameToCansel == passengerNames_array[i])
+                                    if (passengerNameToCansel == passengerNames_List[i])
                                     {
                                         flage_cancel = false;
                                         flage_nameFound = true;
@@ -854,9 +854,9 @@ namespace AirlineReservationConsoleSystem
                             } while (flage_cancel);
 
                             //to get index for passenger name ...
-                            int nameIndex = Array.IndexOf(passengerNames_array, passengerNameToCansel);
+                            int nameIndex = passengerNames_List.IndexOf(passengerNameToCansel);
                             //cancel flight booking process start here ....
-                            CancelFlightBooking(out passengerNameToCansel, nameIndex);
+                            CancelFlightBooking_List(out passengerNameToCansel, nameIndex);
 
                             Console.WriteLine("Do you want to search for anther bookings by " +
                                            " destination? y / n");
@@ -1604,6 +1604,36 @@ namespace AirlineReservationConsoleSystem
                 }
                 //to let the system know that there is passenger booking cancel ...
                 PassengerCount--;
+                Console.WriteLine("Cancel flight booking process done successfully");
+            }
+            else
+            {
+                Console.WriteLine("Cancel flight booking process stoped!");
+            }
+        }
+        //4. CancelFlightBooking_List(out string passengerName) ...
+
+        public static void CancelFlightBooking_List(out string passengerName, int nameIndex)
+        {
+            passengerName = passengerNames_List[nameIndex];
+            //to confirm the action of cancel the flight booking ...
+            bool result = ConfirmAction("Cancel Flight Booking");
+            if (result)
+            {
+                //to loop through all passengerNames_array and passengerBookingID_array
+                //elements after passengerName we want to cancel ...
+                //for (int i = nameIndex; i < passengerNames_List.Count; i++)
+                //{
+                //    //to move passengerNames_array and passengerBookingID_array
+                //    //elements one step forwad to cancel passengerName ...
+                //    passengerNames_array[i] = passengerNames_array[i + 1];
+                //    passengerBookingID_array[i] = passengerBookingID_array[i + 1];
+                //}
+                //numbers.Remove(20);
+                passengerNames_List.Remove(passengerName);
+                passengerBookingID_List.Remove(passengerBookingID_List[nameIndex]);
+                //to let the system know that there is passenger booking cancel ...
+                //PassengerCount--;
                 Console.WriteLine("Cancel flight booking process done successfully");
             }
             else
